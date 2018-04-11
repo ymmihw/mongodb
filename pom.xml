@@ -35,6 +35,7 @@
  </dependencies>
  <modules>
   <module>mongodb-java-api</module>
+  <module>mongodb-simple-tagging</module>
  </modules>
  <build>
   <plugins>
