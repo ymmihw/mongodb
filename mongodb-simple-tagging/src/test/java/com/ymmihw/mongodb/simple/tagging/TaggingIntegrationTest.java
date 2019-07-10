@@ -1,12 +1,10 @@
 package com.ymmihw.mongodb.simple.tagging;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.StreamSupport;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -20,14 +18,18 @@ public class TaggingIntegrationTest {
   /**
    * Object to test. Object to test.
    */
-  private TagRepository repository;
+  private static TagRepository repository = new TagRepository();
 
   /**
    * Sets the test up by instantiating the object to test.
    */
-  @Before
-  public void setup() {
-    repository = new TagRepository();
+
+  @BeforeClass
+  public static void beforeClass() {
+    repository.addPost(Post.builder().title("Post 1").tags(Arrays.asList("MongoDB")).build());
+    repository.addPost(Post.builder().title("Post 2").tags(Arrays.asList("MongoDB")).build());
+    repository.addPost(Post.builder().title("Post 3").tags(Arrays.asList("MongoDB", "Java 8")).build());
+    repository.addPost(Post.builder().title("Post 4").tags(Arrays.asList("Java 8")).build());
   }
 
   /**
@@ -81,7 +83,7 @@ public class TaggingIntegrationTest {
     List<Post> results = repository.postsWithAllTags("MongoDB", "Java 8");
     results.forEach(System.out::println);
 
-    Assert.assertEquals(2, results.size());
+    Assert.assertEquals(1, results.size());
     results.forEach(post -> {
       Assert.assertTrue(post.getTags().contains("MongoDB"));
       Assert.assertTrue(post.getTags().contains("Java 8"));
@@ -161,16 +163,6 @@ public class TaggingIntegrationTest {
     Assert.assertEquals(0, postsAfterDeletion.size());
     postsAfterDeletion = repository.postsWithAtLeastOneTag("jUnit5");
     Assert.assertEquals(0, postsAfterDeletion.size());
-  }
-
-  /**
-   * Cleans up the test by deallocating memory.
-   * 
-   * @throws IOException
-   */
-  @After
-  public void teardown() throws IOException {
-    repository.close();
   }
 
 }

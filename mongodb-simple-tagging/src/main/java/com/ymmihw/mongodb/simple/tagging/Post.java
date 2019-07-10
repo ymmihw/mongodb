@@ -1,6 +1,9 @@
 package com.ymmihw.mongodb.simple.tagging;
 
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 /**
  * Model for a blog post.
@@ -8,6 +11,9 @@ import java.util.List;
  * @author Donato Rimenti
  *
  */
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Post {
 
   /**

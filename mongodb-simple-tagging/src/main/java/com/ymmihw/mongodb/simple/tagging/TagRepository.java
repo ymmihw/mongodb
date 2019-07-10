@@ -43,7 +43,10 @@ public class TagRepository implements Closeable {
    * Instantiates a new TagRepository by opening the DB connection.
    */
   public TagRepository() {
-    mongoClient = new MongoClient("localhost", 27017);
+    MongoContainer mongoContainer = MongoContainer.getInstance();
+    mongoContainer.start();
+    mongoClient = new MongoClient(mongoContainer.getContainerIpAddress(),
+        mongoContainer.getFirstMappedPort());
     MongoDatabase database = mongoClient.getDatabase("blog");
     collection = database.getCollection("posts");
   }
@@ -123,6 +126,18 @@ public class TagRepository implements Closeable {
     post.setAuthor(document.getString("author"));
     post.setTags((List<String>) document.get(TAGS_FIELD));
     return post;
+  }
+
+  private static Document postToDocument(Post post) {
+    Document document = new Document();
+    document.put(DBCollection.ID_FIELD_NAME, post.getTitle());
+    document.put(TAGS_FIELD, post.getTags());
+    document.put("author", post.getAuthor());
+    return document;
+  }
+
+  public void addPost(Post post) {
+    collection.insertOne(postToDocument(post));
   }
 
   /*

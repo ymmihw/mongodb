@@ -10,8 +10,10 @@ import com.mongodb.client.MongoDatabase;
 
 public class MongoExample {
   public static void main(String[] args) {
-
-    MongoClient mongoClient = new MongoClient("localhost", 27017);
+    MongoContainer mongoContainer = MongoContainer.getInstance();
+    mongoContainer.start();
+    MongoClient mongoClient = new MongoClient(mongoContainer.getContainerIpAddress(),
+        mongoContainer.getFirstMappedPort());
 
     MongoDatabase database = mongoClient.getDatabase("myMongoDb");
 
