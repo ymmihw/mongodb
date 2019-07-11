@@ -51,6 +51,7 @@
   <module>mongodb-simple-tagging</module>
   <module>mongodb-bson</module>
   <module>mongodb-container</module>
+  <module>mongodb-geospatial</module>
  </modules>
  <build>
   <plugins>
