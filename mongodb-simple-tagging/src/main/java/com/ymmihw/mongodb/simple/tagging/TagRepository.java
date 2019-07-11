@@ -15,6 +15,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
+import com.ymmihw.mongodb.MongoContainer;
 
 /**
  * Repository used to manage tags for a blog post.

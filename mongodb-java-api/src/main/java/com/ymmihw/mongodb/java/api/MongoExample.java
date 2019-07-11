@@ -7,6 +7,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.ymmihw.mongodb.MongoContainer;
 
 public class MongoExample {
   public static void main(String[] args) {
