@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.bson.Document;
-import com.mongodb.MongoClient;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClientFactory;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
@@ -16,8 +18,8 @@ public class MongoBsonExample {
 
     MongoContainer mongoContainer = MongoContainer.getInstance();
     mongoContainer.start();
-    MongoClient mongoClient = new MongoClient(mongoContainer.getContainerIpAddress(),
-        mongoContainer.getFirstMappedPort());
+    MongoClient mongoClient = MongoClients.create("mongodb://"
+        + mongoContainer.getContainerIpAddress() + ":" + mongoContainer.getFirstMappedPort());
     MongoDatabase database = mongoClient.getDatabase("myDB");
     MongoCollection<Document> collection = database.getCollection("employees");
 

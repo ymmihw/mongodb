@@ -9,8 +9,9 @@ import java.util.List;
 import org.bson.Document;
 import org.junit.Before;
 import org.junit.Test;
-import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -30,8 +31,8 @@ public class MongoGeospatialLiveTest {
     if (mongoClient == null) {
       MongoContainer container = MongoContainer.getInstance();
       container.start();
-      mongoClient =
-          new MongoClient(container.getContainerIpAddress(), container.getFirstMappedPort());
+      MongoClient mongoClient = MongoClients.create(
+          "mongodb://" + container.getContainerIpAddress() + ":" + container.getFirstMappedPort());
       db = mongoClient.getDatabase("myMongoDb");
       collection = db.getCollection("places");
       collection.deleteMany(new Document());
