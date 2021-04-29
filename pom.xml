@@ -19,21 +19,21 @@
    <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-dependencies</artifactId>
-    <version>2.1.6.RELEASE</version>
+    <version>2.4.5</version>
     <type>pom</type>
     <scope>import</scope>
    </dependency>
    <dependency>
     <groupId>org.testcontainers</groupId>
     <artifactId>testcontainers</artifactId>
-    <version>1.11.3</version>
+    <version>1.15.3</version>
    </dependency>
   </dependencies>
  </dependencyManagement>
  <dependencies>
   <dependency>
-   <groupId>org.mongodb</groupId>
-   <artifactId>mongo-java-driver</artifactId>
+   <groupId>org.springframework.boot</groupId>
+   <artifactId>spring-boot-starter-data-mongodb</artifactId>
   </dependency>
   <dependency>
    <groupId>org.projectlombok</groupId>
@@ -64,6 +64,18 @@
      <target>1.8</target>
     </configuration>
    </plugin>
+   <!-- maven not run test -->
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>2.22.0</version>
+   </plugin>
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-failsafe-plugin</artifactId>
+    <version>2.22.0</version>
+   </plugin>
+   <!-- maven not run test -->
   </plugins>
  </build>
 </project>

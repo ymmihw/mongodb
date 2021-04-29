@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.bson.Document;
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -30,6 +30,8 @@ public class TagRepository implements Closeable {
    */
   private static final String TAGS_FIELD = "tags";
 
+  private static final String ID_FIELD_NAME = "_id";
+
   /**
    * The post collection.
    */
@@ -46,8 +48,8 @@ public class TagRepository implements Closeable {
   public TagRepository() {
     MongoContainer mongoContainer = MongoContainer.getInstance();
     mongoContainer.start();
-    mongoClient = new MongoClient(mongoContainer.getContainerIpAddress(),
-        mongoContainer.getFirstMappedPort());
+    mongoClient = MongoClients.create("mongodb://" + mongoContainer.getContainerIpAddress() + ":"
+        + mongoContainer.getFirstMappedPort());
     MongoDatabase database = mongoClient.getDatabase("blog");
     collection = database.getCollection("posts");
   }
@@ -96,7 +98,7 @@ public class TagRepository implements Closeable {
    * @return the outcome of the operation
    */
   public boolean addTags(String title, List<String> tags) {
-    UpdateResult result = collection.updateOne(new BasicDBObject(DBCollection.ID_FIELD_NAME, title),
+    UpdateResult result = collection.updateOne(new BasicDBObject(ID_FIELD_NAME, title),
         Updates.addEachToSet(TAGS_FIELD, tags));
     return result.getModifiedCount() == 1;
   }
@@ -109,7 +111,8 @@ public class TagRepository implements Closeable {
    * @return the outcome of the operation
    */
   public boolean removeTags(String title, List<String> tags) {
-    UpdateResult result = collection.updateOne(new BasicDBObject(DBCollection.ID_FIELD_NAME, title),
+
+    UpdateResult result = collection.updateOne(new BasicDBObject(ID_FIELD_NAME, title),
         Updates.pullAll(TAGS_FIELD, tags));
     return result.getModifiedCount() == 1;
   }
@@ -123,7 +126,7 @@ public class TagRepository implements Closeable {
   @SuppressWarnings("unchecked")
   private static Post documentToPost(Document document) {
     Post post = new Post();
-    post.setTitle(document.getString(DBCollection.ID_FIELD_NAME));
+    post.setTitle(document.getString(ID_FIELD_NAME));
     post.setAuthor(document.getString("author"));
     post.setTags((List<String>) document.get(TAGS_FIELD));
     return post;
@@ -131,7 +134,7 @@ public class TagRepository implements Closeable {
 
   private static Document postToDocument(Post post) {
     Document document = new Document();
-    document.put(DBCollection.ID_FIELD_NAME, post.getTitle());
+    document.put(ID_FIELD_NAME, post.getTitle());
     document.put(TAGS_FIELD, post.getTags());
     document.put("author", post.getAuthor());
     return document;

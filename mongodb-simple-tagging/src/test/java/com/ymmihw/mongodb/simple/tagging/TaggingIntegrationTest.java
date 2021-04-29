@@ -1,11 +1,13 @@
 package com.ymmihw.mongodb.simple.tagging;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.StreamSupport;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for {@link TagRepository}.
@@ -24,11 +26,12 @@ public class TaggingIntegrationTest {
    * Sets the test up by instantiating the object to test.
    */
 
-  @BeforeClass
+  @BeforeAll
   public static void beforeClass() {
     repository.addPost(Post.builder().title("Post 1").tags(Arrays.asList("MongoDB")).build());
     repository.addPost(Post.builder().title("Post 2").tags(Arrays.asList("MongoDB")).build());
-    repository.addPost(Post.builder().title("Post 3").tags(Arrays.asList("MongoDB", "Java 8")).build());
+    repository
+        .addPost(Post.builder().title("Post 3").tags(Arrays.asList("MongoDB", "Java 8")).build());
     repository.addPost(Post.builder().title("Post 4").tags(Arrays.asList("Java 8")).build());
   }
 
@@ -40,9 +43,9 @@ public class TaggingIntegrationTest {
     List<Post> results = repository.postsWithAtLeastOneTag("MongoDB");
     results.forEach(System.out::println);
 
-    Assert.assertEquals(3, results.size());
+    assertEquals(3, results.size());
     results.forEach(post -> {
-      Assert.assertTrue(post.getTags().contains("MongoDB"));
+      assertTrue(post.getTags().contains("MongoDB"));
     });
 
   }
@@ -55,9 +58,9 @@ public class TaggingIntegrationTest {
     List<Post> results = repository.postsWithAtLeastOneTag("MongoDB", "Java 8");
     results.forEach(System.out::println);
 
-    Assert.assertEquals(4, results.size());
+    assertEquals(4, results.size());
     results.forEach(post -> {
-      Assert.assertTrue(post.getTags().contains("MongoDB") || post.getTags().contains("Java 8"));
+      assertTrue(post.getTags().contains("MongoDB") || post.getTags().contains("Java 8"));
     });
   }
 
@@ -69,9 +72,9 @@ public class TaggingIntegrationTest {
     List<Post> results = repository.postsWithAllTags("MongoDB");
     results.forEach(System.out::println);
 
-    Assert.assertEquals(3, results.size());
+    assertEquals(3, results.size());
     results.forEach(post -> {
-      Assert.assertTrue(post.getTags().contains("MongoDB"));
+      assertTrue(post.getTags().contains("MongoDB"));
     });
   }
 
@@ -83,10 +86,10 @@ public class TaggingIntegrationTest {
     List<Post> results = repository.postsWithAllTags("MongoDB", "Java 8");
     results.forEach(System.out::println);
 
-    Assert.assertEquals(1, results.size());
+    assertEquals(1, results.size());
     results.forEach(post -> {
-      Assert.assertTrue(post.getTags().contains("MongoDB"));
-      Assert.assertTrue(post.getTags().contains("Java 8"));
+      assertTrue(post.getTags().contains("MongoDB"));
+      assertTrue(post.getTags().contains("Java 8"));
     });
   }
 
@@ -98,9 +101,9 @@ public class TaggingIntegrationTest {
     List<Post> results = repository.postsWithoutTags("MongoDB");
     results.forEach(System.out::println);
 
-    Assert.assertEquals(1, results.size());
+    assertEquals(1, results.size());
     results.forEach(post -> {
-      Assert.assertFalse(post.getTags().contains("MongoDB"));
+      assertFalse(post.getTags().contains("MongoDB"));
     });
   }
 
@@ -112,10 +115,10 @@ public class TaggingIntegrationTest {
     List<Post> results = repository.postsWithoutTags("MongoDB", "Java 8");
     results.forEach(System.out::println);
 
-    Assert.assertEquals(0, results.size());
+    assertEquals(0, results.size());
     results.forEach(post -> {
-      Assert.assertFalse(post.getTags().contains("MongoDB"));
-      Assert.assertFalse(post.getTags().contains("Java 8"));
+      assertFalse(post.getTags().contains("MongoDB"));
+      assertFalse(post.getTags().contains("Java 8"));
     });
   }
 
@@ -128,41 +131,41 @@ public class TaggingIntegrationTest {
   public void givenTagRepository_whenAddingRemovingElements_thenNoDuplicates() {
     // Adds one element and checks the result.
     boolean result = repository.addTags("Post 1", Arrays.asList("jUnit", "jUnit5"));
-    Assert.assertTrue(result);
+    assertTrue(result);
 
     // We add the same elements again to check that there's no duplication.
     result = repository.addTags("Post 1", Arrays.asList("jUnit", "jUnit5"));
-    Assert.assertFalse(result);
+    assertFalse(result);
 
     // Fetches the element back to check if the elements have been added.
     List<Post> postsAfterAddition = repository.postsWithAllTags("jUnit", "jUnit5");
-    Assert.assertEquals(1, postsAfterAddition.size());
+    assertEquals(1, postsAfterAddition.size());
     postsAfterAddition.forEach(post -> {
-      Assert.assertTrue(post.getTags().contains("jUnit"));
-      Assert.assertTrue(post.getTags().contains("jUnit5"));
+      assertTrue(post.getTags().contains("jUnit"));
+      assertTrue(post.getTags().contains("jUnit5"));
     });
 
     // Checks for duplication.
     long countDuplicateTags =
         StreamSupport.stream(postsAfterAddition.get(0).getTags().spliterator(), false)
             .filter(x -> x.equals("jUnit5")).count();
-    Assert.assertEquals(1, countDuplicateTags);
+    assertEquals(1, countDuplicateTags);
 
     // Tries to remove the tags added.
     result = repository.removeTags("Post 1", Arrays.asList("jUnit", "jUnit5"));
-    Assert.assertTrue(result);
+    assertTrue(result);
 
     // We remove the same elements again to check for errors.
     result = repository.removeTags("Post 1", Arrays.asList("jUnit", "jUnit5"));
-    Assert.assertFalse(result);
+    assertFalse(result);
 
     // Fetches the element back to check if the elements have been removed.
     List<Post> postsAfterDeletion = repository.postsWithAllTags("jUnit", "jUnit5");
-    Assert.assertEquals(0, postsAfterDeletion.size());
+    assertEquals(0, postsAfterDeletion.size());
     postsAfterDeletion = repository.postsWithAtLeastOneTag("jUnit");
-    Assert.assertEquals(0, postsAfterDeletion.size());
+    assertEquals(0, postsAfterDeletion.size());
     postsAfterDeletion = repository.postsWithAtLeastOneTag("jUnit5");
-    Assert.assertEquals(0, postsAfterDeletion.size());
+    assertEquals(0, postsAfterDeletion.size());
   }
 
 }

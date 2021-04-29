@@ -3,8 +3,9 @@ package com.ymmihw.mongodb.java.api;
 import java.util.function.Consumer;
 import org.bson.Document;
 import com.mongodb.BasicDBObject;
-import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.ymmihw.mongodb.MongoContainer;
@@ -13,8 +14,9 @@ public class MongoExample {
   public static void main(String[] args) {
     MongoContainer mongoContainer = MongoContainer.getInstance();
     mongoContainer.start();
-    MongoClient mongoClient = new MongoClient(mongoContainer.getContainerIpAddress(),
-        mongoContainer.getFirstMappedPort());
+
+    MongoClient mongoClient = MongoClients.create("mongodb://"
+        + mongoContainer.getContainerIpAddress() + ":" + mongoContainer.getFirstMappedPort());
 
     MongoDatabase database = mongoClient.getDatabase("myMongoDb");
 
