@@ -1,14 +1,14 @@
 package com.ymmihw.mongodb;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.bson.Document;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -26,7 +26,7 @@ public class MongoGeospatialLiveTest {
   private MongoDatabase db;
   private MongoCollection<Document> collection;
 
-  @Before
+  @BeforeEach
   public void setup() {
     if (mongoClient == null) {
       MongoContainer container = MongoContainer.getInstance();
